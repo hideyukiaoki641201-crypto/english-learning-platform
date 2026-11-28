@@ -1,37 +1,14 @@
-
-import sqlite3
-
+# ① 必要なライブラリを読み込む
 from fastapi import FastAPI
 from pydantic import BaseModel
 
+# ② 共通DBモジュールから関数を読み込む
+from database import get_connection, initialize_database
+
+# ③ FastAPIアプリを作成する
 app = FastAPI()
 
-# SQLiteデータベースのファイル名
-DB_NAME = "vocabulary.db"
-
-
-# データベースに接続する
-def get_connection():
-    conn = sqlite3.connect(DB_NAME)
-    conn.row_factory = sqlite3.Row
-    return conn
-
-
-# 初回起動時にテーブルを作成する
-def initialize_database():
-    with get_connection() as conn:
-        conn.execute("""
-            CREATE TABLE IF NOT EXISTS vocabulary (
-                sense_ID INTEGER PRIMARY KEY AUTOINCREMENT,
-                expression TEXT NOT NULL,
-                meaning TEXT NOT NULL,
-                expression_key TEXT NOT NULL,
-                meaning_key TEXT NOT NULL,
-                UNIQUE(expression_key, meaning_key)
-            )
-        """)
-
-
+# ④ データベースを初期化する
 initialize_database()
 
 
