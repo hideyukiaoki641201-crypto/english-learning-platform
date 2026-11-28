@@ -31,7 +31,22 @@ def initialize_database():
                 UNIQUE(expression_key, meaning_key)
             )
         """)
-
+        # ⑤ ユーザーテーブルを作成する
+        conn.execute("""
+            CREATE TABLE IF NOT EXISTS users (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                google_sub TEXT NOT NULL UNIQUE,
+                name TEXT NOT NULL,
+                email TEXT NOT NULL,
+                role TEXT NOT NULL DEFAULT 'member'
+                    CHECK(role IN ('admin', 'member')),
+                status TEXT NOT NULL DEFAULT 'pending'
+                    CHECK(status IN ('pending', 'approved', 'suspended')),
+                organization_id INTEGER NOT NULL DEFAULT 1,
+                created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+            )
+        """)
         conn.commit()
 
     finally:
